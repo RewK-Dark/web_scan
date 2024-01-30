@@ -1,0 +1,98 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Maps {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+  <style>
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #007bff; 
+        border: 1px solid #007bff;
+        border-radius: 5px;
+        color: white; 
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input[type="file"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #4CAF50; 
+        border-radius: 5px; 
+    }
+
+    button[type="submit"], input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+  </style>
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">Google maps</h6>
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="#">Maps</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Google maps</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+              <a href="#" class="btn btn-sm btn-neutral">New</a>
+              <a href="#" class="btn btn-sm btn-neutral">Filters</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col">
+          <div class="card border-0">
+            {% comment %} <div id="map-default" class="map-canvas" data-lat="40.748817" data-lng="-73.985428" style="height: 600px;"></div> {% endcomment %}
+            <form method="post" action="{% url 'scan' %}" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              <label for="ipFile">IP File:</label>
+              <input type="file" name="ipFile" accept=".txt" required>
+              
+              <label for="usernameFile">Username File:</label>
+              <input type="file" name="usernameFile" accept=".txt" required>
+              
+              <label for="passwordFile">Password File:</label>
+              <input type="file" name="passwordFile" accept=".txt" required>
+              
+              <button type="submit">Upload Files</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% include "includes/footer.html" %}
+      
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDTTfWur0PDbZWPr7Pmq8K3jiDp0_xUziI"></script>
+
+{% endblock javascripts %}

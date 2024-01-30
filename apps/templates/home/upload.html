@@ -1,0 +1,8 @@
+<!-- file: your_app/templates/your_app/upload_template.html -->
+<div id="formContainer">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</div>
