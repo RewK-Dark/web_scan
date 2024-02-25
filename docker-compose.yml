@@ -67,7 +67,7 @@ services:
       context: .
       dockerfile: compose/django/Dockerfile
     container_name: schedule
-    command: celery beat --app core --loglevel info --logfile celery-beat.log
+    command: celery beat --app core --loglevel info --logfile celery-beat.log --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - .:/source
     depends_on:

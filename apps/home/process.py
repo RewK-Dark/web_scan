@@ -53,7 +53,7 @@ def scan(ip, username_list, password_list):
         for password in password_list:
             if check_ssh(ip, username, password) == 1:
                 result.objects.create(ip=ip, username=username, password=password, status="success")
-                send_email(ip, username, password, "success")
+                # send_email(ip, username, password, "success")
                 return
             if check_ssh(ip, username, password) == 2:
                 result.objects.create(ip=ip, username=username, password=password, status="failed")
