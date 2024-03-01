@@ -14,8 +14,8 @@ def check_ssh(ip, username, password):
         return 1
     except (paramiko.AuthenticationException, OSError):
         return 2
-    except (paramiko.SSHException):
-        return 3
+    except Exception as e:
+        return e
 def send_email(ip, username, password, status):
     # Cấu hình thông tin email
     sender_email = 'hinhlx@viettel.com.vn'
@@ -23,7 +23,7 @@ def send_email(ip, username, password, status):
     smtp_server = 'smtp.viettel.com.vn'
     smtp_port = 465
     smtp_username = 'hinhlx@viettel.com.vn'
-    smtp_password = 'Xincamondangnq123@'
+    smtp_password = '@'
 
     # Tạo nội dung email
     subject = 'Kết quả quét SSH'
@@ -47,10 +47,11 @@ def send_email(ip, username, password, status):
         print('Email đã được gửi thành công!')
     except Exception as e:
         print('Gửi email thất bại:', str(e))    
-def scan(ip, username_list, password_list):
+def scan(ip_list, username, password_list):
     login_false = 0
-    for username in username_list:
-        for password in password_list:
+    error = 0
+    for password in password_list:
+        for ip in ip_list:
             if check_ssh(ip, username, password) == 1:
                 result.objects.create(ip=ip, username=username, password=password, status="success")
                 # send_email(ip, username, password, "success")
@@ -61,6 +62,10 @@ def scan(ip, username_list, password_list):
                 if login_false == 5:
                     # time.sleep(300)   # Đợi 5 phút trước khi quét tiếp
                     login_false = 0
-            if check_ssh(ip, username, password) == 3:
-                result.objects.create(ip=ip, username=username, password=password, status="not connected")
-                return
+            # if check_ssh(ip, username, password) == 3:
+            #     result.objects.create(ip=ip, username=username, password=password, status="not connected")
+            #     # error +=1
+            #     # if error == 3:
+            #     return
+            else:
+                result.objects.create(ip=ip, username=username, password=password, status=check_ssh(ip, username, password))

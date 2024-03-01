@@ -18,3 +18,4 @@ redis==3.2.1
 paramiko
 Pillow
 django-celery-beat
+django_celery_results

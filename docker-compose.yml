@@ -52,7 +52,7 @@ services:
       context: .
       dockerfile: compose/django/Dockerfile
     container_name: worker
-    command: celery worker --app core --loglevel info --logfile celery-worker.log
+    command: celery worker --app core --concurrency=4 --loglevel info --logfile celery-worker.log
     volumes:
       - .:/source
     depends_on:

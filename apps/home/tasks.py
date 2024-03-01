@@ -9,12 +9,7 @@ def scan_task(ip_list, username_list, password_list):
     with ThreadPoolExecutor(max_workers=thread_pool_size) as executor:
         futures = []
 
-        for ip in ip_list:
-            executor.submit(scan, ip, username_list, password_list)
-            # future = executor.submit(scan, ip, username_list, password_list)
-        #     futures.append(future)
-
-        # for future in as_completed(futures):
-        #     result = future.result()
+        for user in username_list:
+            executor.submit(scan, ip_list, user, password_list)
 
     return 'Scan task has been initiated successfully.'
