@@ -74,6 +74,3 @@ def scan(ip_list, username, password_list):
             #     # error +=1
             #     # if error == 3:
             #     return
-            else:
-                time.sleep(2)
-                result.objects.create(ip=ip, username=username, password=password, status=check_ssh(ip, username, password))
