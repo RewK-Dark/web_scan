@@ -52,11 +52,12 @@ def scan(ip_list, username, password_list):
     error = 0
     for password in password_list:
         for ip in ip_list:
-            if check_ssh(ip, username, password) == 1:
+            result_scan = check_ssh(ip, username, password)
+            if  result_scan== 1:
                 result.objects.create(ip=ip, username=username, password=password, status="success")
                 # send_email(ip, username, password, "success")
                 return
-            if check_ssh(ip, username, password) == 2:
+            if result_scan == 2:
                 result.objects.create(ip=ip, username=username, password=password, status="failed")
                 login_false += 1
                 if login_false == 5:
@@ -68,4 +69,4 @@ def scan(ip_list, username, password_list):
             #     # if error == 3:
             #     return
             else:
-                result.objects.create(ip=ip, username=username, password=password, status=check_ssh(ip, username, password))
+                result.objects.create(ip=ip, username=username, password=password, status=result_scan)
