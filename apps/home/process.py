@@ -5,17 +5,22 @@ import paramiko
 import json
 import smtplib
 from .models import *
+import traceback, sys
 
 def check_ssh(ip, username, password):
     try:
         transport = paramiko.Transport(ip)
         transport.connect(username=username, password=password)
         transport.close()
-        return 1
-    except (paramiko.AuthenticationException, OSError):
-        return 2
+        return True, None
+    
     except Exception as e:
-        return e
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        log = ''.join('!! ' + line for line in lines) # Log it or whatever here
+        print("Log detail {}".format(log))
+        return False, log
+
 def send_email(ip, username, password, status):
     # Cấu hình thông tin email
     sender_email = 'hinhlx@viettel.com.vn'
@@ -46,19 +51,20 @@ def send_email(ip, username, password, status):
         server.quit()
         print('Email đã được gửi thành công!')
     except Exception as e:
-        print('Gửi email thất bại:', str(e))    
+        print('Gửi email thất bại:', str(e))
+         
 def scan(ip_list, username, password_list):
     login_false = 0
     error = 0
     for password in password_list:
         for ip in ip_list:
-            result_scan = check_ssh(ip, username, password)
-            if  result_scan== 1:
+            status, log = check_ssh(ip, username, password)
+            if  status:
                 result.objects.create(ip=ip, username=username, password=password, status="success")
                 # send_email(ip, username, password, "success")
                 return
-            if result_scan == 2:
-                result.objects.create(ip=ip, username=username, password=password, status="failed")
+            else:
+                result.objects.create(ip=ip, username=username, password=password, status=log)
                 login_false += 1
                 if login_false == 5:
                     # time.sleep(300)   # Đợi 5 phút trước khi quét tiếp
@@ -69,4 +75,5 @@ def scan(ip_list, username, password_list):
             #     # if error == 3:
             #     return
             else:
-                result.objects.create(ip=ip, username=username, password=password, status=result_scan)
+                time.sleep(2)
+                result.objects.create(ip=ip, username=username, password=password, status=check_ssh(ip, username, password))
