@@ -8,18 +8,20 @@ from .models import *
 import traceback, sys
 
 def check_ssh(ip, username, password):
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        transport = paramiko.Transport(ip)
-        transport.connect(username=username, password=password)
-        transport.close()
+        client.connect(ip, username=username, password=password, banner_timeout=1000)
+        client.close()
         return True, None
-    
+
     except Exception as e:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
-        log = ''.join('!! ' + line for line in lines) # Log it or whatever here
-        print("Log detail {}".format(log))
-        return False, log
+        log = ''.join('!! ' + line for line in lines)  # Log it or whatever here
+        #print("Log detail {}".format(log))
+        client.close()
+        return False, e
 
 def send_email(ip, username, password, status):
     # Cấu hình thông tin email
@@ -59,7 +61,7 @@ def scan(ip_list, username, password_list):
     for password in password_list:
         for ip in ip_list:
             status, log = check_ssh(ip, username, password)
-            if  status:
+            if status:
                 result.objects.create(ip=ip, username=username, password=password, status="success")
                 # send_email(ip, username, password, "success")
                 return
@@ -67,7 +69,7 @@ def scan(ip_list, username, password_list):
                 result.objects.create(ip=ip, username=username, password=password, status=log)
                 login_false += 1
                 if login_false == 5:
-                    # time.sleep(300)   # Đợi 5 phút trước khi quét tiếp
+                    # time.sleep(300)   # Đợi 5 phuytyút trước khi quét tiếp
                     login_false = 0
             # if check_ssh(ip, username, password) == 3:
             #     result.objects.create(ip=ip, username=username, password=password, status="not connected")
