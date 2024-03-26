@@ -19,3 +19,9 @@ paramiko
 Pillow
 django-celery-beat
 django_celery_results
+argparse
+colorlog
+xfreerdp
+python-nmap
+nmap
+hydra

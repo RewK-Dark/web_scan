@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'celery',
+    'django_celery_results',
     'apps.home'  # Enable the inner home (home)
 ]
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
@@ -128,7 +129,7 @@ STATICFILES_DIRS = (
 )
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_BACKEND_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
-
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
 #############################################################
 #############################################################
